@@ -1,0 +1,230 @@
+// Vercel 生产环境 Prisma Schema (使用 PostgreSQL)
+// 复制此文件到 schema.prisma 用于生产环境部署
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String
+  image         String?
+  role          String    @default("AGENT")
+  department    String?
+  departmentCode String?  // 部门代码：SALES, DESIGN, RESOURCES, OPERATIONS, FINANCE, ADMIN
+  position      String?   // 职位：顾问、策划师、资源管理员等
+  permissions   String?   // JSON字符串存储具体权限
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 关联
+  customers     Customer[]
+  quotes        Quote[]
+  orders        Order[]
+  approvals     Approval[] @relation("ApproverApprovals")
+  submittedApprovals Approval[] @relation("SubmitterApprovals")
+  knowledgeBases KnowledgeBase[]
+  auditLogs     AuditLog[]
+  comments      Comment[]
+
+  @@map("users")
+}
+
+// 客户模型
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  address     String?
+  industry    String?
+  status      String   @default("ACTIVE")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  agentId     String
+  agent       User     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  // 关联
+  quotes      Quote[]
+  orders      Order[]
+
+  @@map("customers")
+}
+
+// 产品模型
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  sku         String   @unique
+  description String?
+  category    String?
+  price       Float
+  cost        Float?
+  stock       Int      @default(0)
+  unit        String   @default("件")
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  quoteItems  QuoteItem[]
+
+  @@map("products")
+}
+
+// 报价模型
+model Quote {
+  id          String   @id @default(cuid())
+  quoteNumber String   @unique
+  title       String
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  agentId     String
+  agent       User     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  status      String   @default("DRAFT")
+  validUntil  DateTime?
+  discount    Float    @default(0)
+  tax         Float    @default(0)
+  total       Float
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 关联
+  items       QuoteItem[]
+  approvals   Approval[]
+  comments    Comment[]
+  orders      Order[]
+
+  @@map("quotes")
+}
+
+// 报价项目
+model QuoteItem {
+  id          String   @id @default(cuid())
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity    Int
+  price       Float
+  discount    Float    @default(0)
+  total       Float
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("quote_items")
+}
+
+// 审批流程
+model Approval {
+  id          String   @id @default(cuid())
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  submitterId String
+  submitter   User     @relation("SubmitterApprovals", fields: [submitterId], references: [id], onDelete: Cascade)
+  approverId  String
+  approver    User     @relation("ApproverApprovals", fields: [approverId], references: [id], onDelete: Cascade)
+  status      String   @default("PENDING")
+  comments    String?
+  approvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("approvals")
+}
+
+// 知识库
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  type        String   @default("TEXT") // TEXT, QA, DOCUMENT
+  category    String
+  tags        String   // JSON string of tags array
+  fileUrl     String?  // 文档URL
+  fileName    String?  // 文件名
+  fileType    String?  // 文件类型
+  question    String?  // 问答对-问题
+  answer      String?  // 问答对-答案
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  published   Boolean  @default(true)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("knowledge_base")
+}
+
+// 评论
+model Comment {
+  id          String   @id @default(cuid())
+  content     String
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("comments")
+}
+
+// 订单模型
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  quoteId         String?
+  quote           Quote?   @relation(fields: [quoteId], references: [id], onDelete: SetNull)
+  agentId         String
+  agent           User     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  status          String   @default("DRAFT") // DRAFT, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
+  title           String
+  startDate       DateTime?
+  endDate         DateTime?
+  days            Int?
+  nights          Int?
+  travelers       Int      @default(1)
+  totalAmount     Float
+  paidAmount      Float    @default(0)
+  paymentStatus   String   @default("UNPAID") // UNPAID, PARTIAL, PAID, REFUNDED
+  notes           String?
+  itinerary       String?  // JSON字符串存储行程信息
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("orders")
+}
+
+// 审计日志
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String
+  entity      String
+  entityId    String
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  changes     String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
