@@ -16,6 +16,11 @@
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },
+  "overrides": {
+    "next-auth": {
+      "nodemailer": "^6.9.0"
+    }
+  },
   "dependencies": {
     "@prisma/client": "^5.9.0",
     "@radix-ui/react-avatar": "^1.0.4",
