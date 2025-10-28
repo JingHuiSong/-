@@ -1,6 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "rm -rf node_modules/.prisma && prisma generate && next build",
-  "installCommand": "npm install --legacy-peer-deps"
+  "buildCommand": "pnpm db:generate && pnpm build",
+  "installCommand": "pnpm install --no-frozen-lockfile"
 }
-
