@@ -1,0 +1,52 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 彩色山峦 -->
+  <g opacity="0.8">
+    <!-- 浅绿色山 -->
+    <path d="M200 680C250 600 350 500 450 550C550 600 650 500 750 580C850 660 900 600 950 680V720H200V680Z" fill="url(#grad1)"/>
+    <!-- 紫色山 -->
+    <path d="M300 580C350 520 420 450 500 480C580 510 620 460 680 520C740 580 780 540 820 580V680H300V580Z" fill="url(#grad2)"/>
+    <!-- 黄色山 -->
+    <path d="M400 500C440 450 500 420 560 440C620 460 660 430 700 470C740 510 770 480 800 500V580H400V500Z" fill="url(#grad3)"/>
+    <!-- 橙色山（最高） -->
+    <path d="M450 400C490 320 560 280 640 320C720 360 780 300 840 380C900 460 920 400 950 450V520H450V400Z" fill="url(#grad4)"/>
+    <!-- 绿色山 -->
+    <path d="M550 500C590 440 660 400 730 440C800 480 860 420 920 480C980 540 1000 500 1020 550V650H550V500Z" fill="url(#grad5)"/>
+    <!-- 米色山 -->
+    <path d="M700 550C740 500 800 470 860 500C920 530 970 490 1010 540V650H700V550Z" fill="url(#grad6)"/>
+  </g>
+
+  <!-- 渐变定义 -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B8E6CC;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#8FD9B6;stop-opacity:0.7" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B4A7D6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#9B8FC4;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D869;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#E8C859;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="grad4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4B083;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#E89B6D;stop-opacity:0.7" />
+    </linearGradient>
+    <linearGradient id="grad5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90D88E;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#7BC878;stop-opacity:0.7" />
+    </linearGradient>
+    <linearGradient id="grad6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5E6D3;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#E8D9C6;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+
+  <!-- 文字 -->
+  <text x="540" y="850" font-family="PingFang SC, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="#000000">远见者</text>
+  <line x1="180" y1="920" x2="280" y2="920" stroke="#000000" stroke-width="3"/>
+  <text x="540" y="940" font-family="PingFang SC, sans-serif" font-size="40" text-anchor="middle" fill="#666666">预见世界，预见自己</text>
+  <line x1="800" y1="920" x2="900" y2="920" stroke="#000000" stroke-width="3"/>
+</svg>
+
